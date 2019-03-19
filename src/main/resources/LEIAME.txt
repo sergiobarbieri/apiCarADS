@@ -1,0 +1,15 @@
+LEIA-ME:
+
+Projeto Spring Boot para alunos da faculdade Drummond
+
+Crud tabela car
+
+
+
+
+
+In any modern browser, the Cross-Origin Resource Sharing (CORS) is a relevant specification with the emergence of HTML5 and JS clients that consume data via REST APIs.
+
+In many cases, the host that serves the JS (e.g. example.com) is different from the host that serves the data (e.g. api.example.com). In such a case, CORS enables the cross-domain communication.
+
+Spring provides first class support for CORS, offering an easy and powerful way of configuring it in any Spring or Spring Boot web application.
