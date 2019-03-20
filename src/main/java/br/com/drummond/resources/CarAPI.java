@@ -25,7 +25,6 @@ public class CarAPI {
 	
 	@Autowired
 	CarRepository carRepository;
-	@CrossOrigin(origins = "file:///L:/apiCar.html")
 	@RequestMapping(value = "/health", method = RequestMethod.GET)
 	public String test() {
 		
@@ -59,7 +58,7 @@ public class CarAPI {
 	@RequestMapping(value = "/cars/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> obterCarId(@PathVariable Integer id) {
 		
-		Optional<Car> car; // Optional: container objeto. Pode ou não conter o objeto Car
+		Optional<Car> car; // Optional: container objeto.
 		
 		car = carRepository.findById(id);
 		
@@ -87,7 +86,7 @@ public class CarAPI {
 	 * @param car
 	 * @return
 	 */
-	@RequestMapping(value = "/cars/{i}", method = RequestMethod.POST)
+	@RequestMapping(value = "/cars/{i}", method = RequestMethod.PUT)
 	public ResponseEntity<Car> updateCarId(@RequestBody Car carPost, @PathVariable Integer id) {
 		
 		Optional<Car> carRepo; 
