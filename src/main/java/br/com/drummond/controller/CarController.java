@@ -12,5 +12,17 @@ public class CarController {
 		     
 		   return "carView";
 	}
+	
+	@RequestMapping(value = "/carView2", method = RequestMethod.GET)
+	public String getCarView2() {
+		     
+		   return "carView2";
+	}
+	
+	@RequestMapping(value = "/carView3", method = RequestMethod.GET)
+	public String getCarView3() {
+		     
+		   return "carView3";
+	}
 
 }
