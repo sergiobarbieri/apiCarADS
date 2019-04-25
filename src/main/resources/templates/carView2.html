@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -12,19 +12,18 @@
     <title>Cars - Exemplo GET - VUE.JS | AXIOS</title>
 
     <script>
-        function getCars() {
-            new Vue({
-                el: '#app',
-                data() {
-                    return {
-                        cars: null
-                    }
-                },
-                mounted() {
-                    axios.get('http://localhost:8001/cars').then(response => (this.cars = response.data))
-                }
-            })
 
+        function getCars() {
+            app.refreshCars();
+        }
+
+        function insertCar() {
+            var car = {}
+            car.model = $("#modelo").val();
+            car.year = parseInt($("#ano").val());
+            app.newCar(car);
+
+            $('#modalCar').modal('hide')
         }
     </script>
 
@@ -43,12 +42,83 @@
             </div>
             <div class="col-sm">
                 <span v-html="car.year" class="badge badge-secondary"></span>
-               
+
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-sm">
+                <button class="btn btn-primary" onclick="getCars()">Obter Carros</button>
+            </div>
+            <div class="col-sm">
+                <button class="btn btn-success" onclick="$('#modalCar').modal();">Novo Carro</button>
             </div>
         </div>
 
-        <button class="btn btn-primary" onclick="getCars()">Obter Carros</button>
+        <div id="modalCar" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Novo carro</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="codigo">Código</label>
+                            <input type="text" class="form-control" disabled="disabled"  id="codigo" placeholder="informe ID">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="modelo">Modelo</label>
+                            <input type="text" class="form-control" id="modelo" placeholder="informe modelo">
+                        </div>
+
+                         <div class="form-group">
+                            <label for="ano">Ano</label>
+                            <input type="text" class="form-control" id="ano" placeholder="informe ano">
+                        </div>
+                      
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="insertCar();">Salvar</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
-    <script>getCars();</script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data() {
+                return {
+                    cars: null
+                }
+            },
+            mounted() {
+                axios.get('http://localhost:8001/cars').then(response => (this.cars = response.data))
+            },
+            methods: {
+                refreshCars: function () {
+                    axios.get('http://localhost:8001/cars').then(response => (this.cars = response.data))
+                },
+                newCar: function (car) {
+                    console.log(car);
+                    axios.post('http://localhost:8001/cars', car).then(function (response) {
+                        console.log(response);
+                        app.refreshCars();
+                    })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                    
+                }
+            }
+        })
+
+    </script>
 </body>
 </html>
