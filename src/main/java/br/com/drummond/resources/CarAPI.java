@@ -75,6 +75,13 @@ public class CarAPI {
 	 */
 	@RequestMapping(value = "/cars", method = RequestMethod.POST)
 	public ResponseEntity<Car> inserirCarId(@RequestBody Car car) {
+		
+		Optional<Car> carRepo; 
+		
+		carRepo = carRepository.findById(car.getCarId());
+		
+		if (carRepo.isPresent())
+			return new ResponseEntity<Car>(carRepo.get(), HttpStatus.CONFLICT);
 						
 		carRepository.save(car);
 		

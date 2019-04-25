@@ -19,11 +19,15 @@
 
         function insertCar() {
             var car = {}
+            car.carId = $("#codigo").val();
             car.model = $("#modelo").val();
             car.year = parseInt($("#ano").val());
             app.newCar(car);
 
             $('#modalCar').modal('hide')
+            if (app.httpStatus == 200 || app.httpStatus == 201) {
+                app.messageProc = "Novo carro inserido com sucesso.";
+            }
         }
     </script>
 
@@ -31,8 +35,10 @@
 <body>
     <div class="container" id="app">
 
-        <h1>Cars - VUE | AXIOS</h1>
-
+        <h1>Cars - VUE | AXIOS - status:<span class="badge badge-success">{{ httpStatus }}</span></h1>
+        <div class="alert alert-primary" role="alert">
+          {{messageProc}}
+        </div>
         <div class="row" v-for="car in cars">
             <div class="col-sm">
                 <span class="badge badge-primary">{{ car.carId }}</span>
@@ -67,7 +73,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="codigo">Código</label>
-                            <input type="text" class="form-control" disabled="disabled"  id="codigo" placeholder="informe ID">
+                            <input type="text" class="form-control"  id="codigo" placeholder="informe ID">
                         </div>
 
                         <div class="form-group">
@@ -95,7 +101,9 @@
             el: '#app',
             data() {
                 return {
-                    cars: null
+                    cars: null,
+                    messageProc: "Aguardando ação...",
+                    httpStatus: 0
                 }
             },
             mounted() {
@@ -109,10 +117,13 @@
                     console.log(car);
                     axios.post('http://localhost:8001/cars', car).then(function (response) {
                         console.log(response);
+                        app.httpStatus = response.status;
                         app.refreshCars();
                     })
                         .catch(function (error) {
                             console.log(error);
+                            app.messageProc = error.message;;
+                            app.httpStatus = 500;
                         });
                     
                 }

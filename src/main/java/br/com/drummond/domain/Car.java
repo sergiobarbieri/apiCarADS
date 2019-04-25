@@ -8,7 +8,6 @@ import javax.persistence.Id;
 public class Car {
 
 	@Id
-	@GeneratedValue
 	private Integer carId;
 	private String model;
 	private Integer year;
