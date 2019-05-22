@@ -12,7 +12,7 @@
 
     <link href="css/open-iconic-bootstrap.min.css" rel="stylesheet">
 
-    <title>Cars - Exemplo GET - VUE.JS | AXIOS</title>
+    <title>Cars - Exemplo APIs - VUE.JS | AXIOS</title>
 
     <script>
         var vApp;
@@ -30,6 +30,9 @@
                     },
                     novo: function (data) {
                         axios.post('http://localhost:8001/cars', data).then(response => (this.obter()))
+                    },
+                    eliminar: function (id) {
+                        axios.delete('http://localhost:8001/cars/' + id).then(response => (this.obter()))
                     },
                 }
             })
@@ -50,6 +53,24 @@
             $("#novoCarro").modal('hide');
 
         }
+        
+        function deleteCar(obj) {
+        	var i = parseInt(obj.dataset.deleteId);
+        	console.log(vApp.cars[i]);
+        	// prepara modal de confirmação
+        	$("#txtCarId_delete").val(vApp.cars[i].carId);
+        	$("#txtModel_delete").val(vApp.cars[i].model);
+        	
+        	$("#deleteCarModal").modal('show');
+        	
+        }
+        
+        function deleteCarConfirm() {
+        	
+        	vApp.eliminar($("#txtCarId_delete").val());
+        	
+        	$("#deleteCarModal").modal('hide');
+        }
     </script>
 
 </head>
@@ -60,7 +81,8 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">Ação</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
                     <th scope="col">#</th>
                     <th scope="col">Modelo</th>
                     <th scope="col">Ano</th>
@@ -68,7 +90,9 @@
             </thead>
             <tbody>
                 <tr v-for="(car, index) in cars">
-                    <td><span onclick="" class="oi oi-pencil" v-bind:data-update-id="index" aria-hidden="true"></span></td>
+                    <td><span onclick="updateCar(this);" class="oi oi-pencil" v-bind:data-update-id="index" aria-hidden="true"></span></td>
+                    <td><span onclick="deleteCar(this);" class="oi oi-trash" v-bind:data-delete-id="index" aria-hidden="true"></span></td>
+                    
                     <td>{{ car.carId }}</td>
                     <td>{{ car.model }}</td>
                     <td>{{ car.year }}</td>
@@ -114,6 +138,39 @@
             </div>
         </div>
     </div>
+    
+    <div id="deleteCarModal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Eliminar Carro</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="txtCarId_delete">Código</label>
+                            <input type="number" class="form-control" id="txtCarId_delete" readOnly="readOnly" />
+                          
+                        </div>
+                        <div class="form-group">
+                            <label for="txtModel_delete">Modelo</label>
+                            <input type="text" class="form-control" id="txtModel_delete" placeholder="modelo readOnly="readOnly"">
+                        </div>
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                        <button type="button" class="btn btn-primary" onclick="deleteCarConfirm();">Eliminar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    
     <script>createCars();</script>
 </body>
 </html>

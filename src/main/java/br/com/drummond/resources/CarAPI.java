@@ -93,7 +93,7 @@ public class CarAPI {
 	 * @param car
 	 * @return
 	 */
-	@RequestMapping(value = "/cars/{i}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/cars/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Car> updateCarId(@RequestBody Car carPost, @PathVariable Integer id) {
 		
 		Optional<Car> carRepo; 
@@ -113,15 +113,15 @@ public class CarAPI {
 		return new ResponseEntity<Car>(carRepo.get(), HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/cars/{i}", method = RequestMethod.DELETE)
-	public ResponseEntity<Car> deleteCarId(@RequestBody Car carPost, @PathVariable Integer id) {
+	@RequestMapping(value = "/cars/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<Car> deleteCarId(@PathVariable Integer id) {
 		
 		Optional<Car> carRepo; 
 		
 		carRepo = carRepository.findById(id);
 		
 		if (!carRepo.isPresent())
-			return new ResponseEntity<Car>(carPost, HttpStatus.NO_CONTENT);
+			return new ResponseEntity<Car>(carRepo.get(), HttpStatus.NO_CONTENT);
 	
 		carRepository.deleteById(id);
 		
