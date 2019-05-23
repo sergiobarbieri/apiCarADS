@@ -29,10 +29,17 @@
                         axios.get('http://localhost:8001/cars').then(response => (this.cars = response.data))
                     },
                     novo: function (data) {
-                        axios.post('http://localhost:8001/cars', data).then(response => (this.obter()))
+                        axios.post('http://localhost:8001/cars', data).then(response => (this.obter())).catch(error => {
+                            novoCarroError(error);
+                        });
                     },
                     eliminar: function (id) {
                         axios.delete('http://localhost:8001/cars/' + id).then(response => (this.obter()))
+                    },
+                    alterar: function (id, data) {
+                        axios.put('http://localhost:8001/cars/' + id, data).then(response => (this.obter())).catch(error => {
+                            alterarCarroError(error);
+                        });
                     },
                 }
             })
@@ -53,24 +60,60 @@
             $("#novoCarro").modal('hide');
 
         }
-        
+
+        function novoCarroError(err) {
+            console.log(err.response.status);
+            if (err.response.status == 409) {
+                $("#msgAlerta").text("Carro já cadastrado.");
+
+            } else {
+                $("#msgAlerta").text("Erro chamada função:" + err.response.status);
+            }
+            $("#divAlerta").addClass("show");
+        }
+
         function deleteCar(obj) {
-        	var i = parseInt(obj.dataset.deleteId);
-        	console.log(vApp.cars[i]);
-        	// prepara modal de confirmação
-        	$("#txtCarId_delete").val(vApp.cars[i].carId);
-        	$("#txtModel_delete").val(vApp.cars[i].model);
-        	
-        	$("#deleteCarModal").modal('show');
-        	
+            var i = parseInt(obj.dataset.deleteId);
+            console.log(vApp.cars[i]);
+            // prepara modal de confirmação
+            $("#txtCarId_delete").val(vApp.cars[i].carId);
+            $("#txtModel_delete").val(vApp.cars[i].model);
+
+            $("#deleteCarModal").modal('show');
+
         }
-        
+
         function deleteCarConfirm() {
-        	
-        	vApp.eliminar($("#txtCarId_delete").val());
-        	
-        	$("#deleteCarModal").modal('hide');
+
+            vApp.eliminar($("#txtCarId_delete").val());
+
+            $("#deleteCarModal").modal('hide');
         }
+
+        function updateCar(obj) {
+            var i = parseInt(obj.dataset.updateId);
+            console.log(vApp.cars[i]);
+            // prepara modal de alteração
+            $("#txtCarId_update").val(vApp.cars[i].carId);
+            $("#txtModel_update").val(vApp.cars[i].model);
+            $("#txtYear_update").val(vApp.cars[i].year);
+
+            $("#updateCarModal").modal('show');
+
+        }
+
+        function updateCarConfirm() {
+
+            var car = {}
+            car.carId = parseInt($("#txtCarId_update").val());
+            car.model = $("#txtModel_update").val()
+            car.year = parseInt($("#txtYear_update").val());
+
+            vApp.alterar($("#txtCarId_update").val(), car);
+
+            $("#updateCarModal").modal('hide');
+        }
+
     </script>
 
 </head>
@@ -78,6 +121,12 @@
     <div class="container" id="app">
 
         <h1>Cars - VUE | AXIOS</h1>
+        <div id="divAlerta" class="alert alert-warning alert-dismissible fade" role="alert">
+            <span id="msgAlerta"></span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
         <table class="table">
             <thead>
                 <tr>
@@ -92,7 +141,7 @@
                 <tr v-for="(car, index) in cars">
                     <td><span onclick="updateCar(this);" class="oi oi-pencil" v-bind:data-update-id="index" aria-hidden="true"></span></td>
                     <td><span onclick="deleteCar(this);" class="oi oi-trash" v-bind:data-delete-id="index" aria-hidden="true"></span></td>
-                    
+
                     <td>{{ car.carId }}</td>
                     <td>{{ car.model }}</td>
                     <td>{{ car.year }}</td>
@@ -105,6 +154,7 @@
 
         <button class="btn btn-primary" onclick="novoCarro()">Novo Carro</button>
 
+        <!-- modal novo carro -->
         <div id="novoCarro" class="modal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -117,17 +167,17 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="txtCarId">Código</label>
-                            <input type="number" class="form-control" id="txtCarId"  />
-                          
+                            <input type="number" class="form-control" id="txtCarId" />
+
                         </div>
                         <div class="form-group">
                             <label for="txtModel">Modelo</label>
                             <input type="text" class="form-control" id="txtModel" placeholder="modelo">
                         </div>
                         <div class="form-group">
-                             <label for="txtYear">Ano</label>
+                            <label for="txtYear">Ano</label>
                             <input type="number" class="form-control" id="txtYear" />
-                          
+
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -137,9 +187,42 @@
                 </div>
             </div>
         </div>
-    </div>
-    
-    <div id="deleteCarModal" class="modal" tabindex="-1" role="dialog">
+
+        <!-- modal alterar carro -->
+        <div id="updateCarModal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Alterar Carro</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="txtCarId_update">Código</label>
+                            <input type="number" class="form-control" id="txtCarId_update" readonly="readOnly" />
+
+                        </div>
+                        <div class="form-group">
+                            <label for="txtModel_update">Modelo</label>
+                            <input type="text" class="form-control" id="txtModel_update" placeholder="modelo">
+                        </div>
+                        <div class="form-group">
+                            <label for="txtYear_update">Ano</label>
+                            <input type="number" class="form-control" id="txtYear_update" />
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                        <button type="button" class="btn btn-primary" onclick="updateCarConfirm();">Alterar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="deleteCarModal" class="modal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -151,14 +234,14 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="txtCarId_delete">Código</label>
-                            <input type="number" class="form-control" id="txtCarId_delete" readOnly="readOnly" />
-                          
+                            <input type="number" class="form-control" id="txtCarId_delete" readonly="readOnly" />
+
                         </div>
                         <div class="form-group">
                             <label for="txtModel_delete">Modelo</label>
-                            <input type="text" class="form-control" id="txtModel_delete" placeholder="modelo readOnly="readOnly"">
+                            <input type="text" class="form-control" id="txtModel_delete" placeholder="modelo" readonly="readOnly" />
                         </div>
-                        
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
@@ -168,9 +251,7 @@
             </div>
         </div>
     </div>
-    
-    
-    
+
     <script>createCars();</script>
 </body>
 </html>
