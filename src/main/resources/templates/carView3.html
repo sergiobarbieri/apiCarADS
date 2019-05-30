@@ -13,7 +13,9 @@
     <link href="css/open-iconic-bootstrap.min.css" rel="stylesheet">
 
     <title>Cars - Exemplo APIs - VUE.JS | AXIOS</title>
-
+    <style>
+        .ponteiro {cursor:pointer;}
+    </style>
     <script>
         var vApp;
         function createVueCars() {
@@ -149,8 +151,8 @@
             </thead>
             <tbody>
                 <tr v-for="(car, index) in cars">
-                    <td><span onclick="updateCar(this);" class="oi oi-pencil" v-bind:data-update-id="index" aria-hidden="true"></span></td>
-                    <td><span onclick="deleteCar(this);" class="oi oi-trash" v-bind:data-delete-id="index" aria-hidden="true"></span></td>
+                    <td><span onclick="updateCar(this);" class="oi oi-pencil ponteiro" v-bind:data-update-id="index" aria-hidden="true"></span></td>
+                    <td><span onclick="deleteCar(this);" class="oi oi-trash ponteiro" v-bind:data-delete-id="index" aria-hidden="true"></span></td>
 
                     <td>{{ car.carId }}</td>
                     <td>{{ car.model }}</td>
