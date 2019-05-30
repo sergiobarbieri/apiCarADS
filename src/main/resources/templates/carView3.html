@@ -16,7 +16,7 @@
 
     <script>
         var vApp;
-        function createCars() {
+        function createVueCars() {
             vApp = new Vue({
                 el: '#app',
                 data() {
@@ -38,7 +38,7 @@
                     },
                     alterar: function (id, data) {
                         axios.put('http://localhost:8001/cars/' + id, data).then(response => (this.obter())).catch(error => {
-                            alterarCarroError(error);
+                        	updateCarError(error);
                         });
                     },
                 }
@@ -78,7 +78,6 @@
             // prepara modal de confirmação
             $("#txtCarId_delete").val(vApp.cars[i].carId);
             $("#txtModel_delete").val(vApp.cars[i].model);
-
             $("#deleteCarModal").modal('show');
 
         }
@@ -112,6 +111,17 @@
             vApp.alterar($("#txtCarId_update").val(), car);
 
             $("#updateCarModal").modal('hide');
+        }
+        
+        function updateCarError(err) {
+            console.log(err.response.status);
+            if (err.response.status == 204) {
+                $("#msgAlerta").text("Carro não cadastrado.");
+
+            } else {
+                $("#msgAlerta").text("Erro chamada função:" + err.response.status);
+            }
+            $("#divAlerta").addClass("show");
         }
 
     </script>
@@ -252,6 +262,6 @@
         </div>
     </div>
 
-    <script>createCars();</script>
+    <script>createVueCars();</script>
 </body>
 </html>
