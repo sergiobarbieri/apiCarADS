@@ -28,18 +28,18 @@
                 },
                 methods: {
                     obter: function () {
-                        axios.get('http://localhost:8001/cars').then(response => (this.cars = response.data))
+                        axios.get('https://drm-carapi.herokuapp.com/cars').then(response => (this.cars = response.data))
                     },
                     novo: function (data) {
-                        axios.post('http://localhost:8001/cars', data).then(response => (this.obter())).catch(error => {
+                        axios.post('https://drm-carapi.herokuapp.com/cars', data).then(response => (this.obter())).catch(error => {
                             novoCarroError(error);
                         });
                     },
                     eliminar: function (id) {
-                        axios.delete('http://localhost:8001/cars/' + id).then(response => (this.obter()))
+                        axios.delete('https://drm-carapi.herokuapp.com/cars/' + id).then(response => (this.obter()))
                     },
                     alterar: function (id, data) {
-                        axios.put('http://localhost:8001/cars/' + id, data).then(response => (this.obter())).catch(error => {
+                        axios.put('https://drm-carapi.herokuapp.com/cars/' + id, data).then(response => (this.obter())).catch(error => {
                         	updateCarError(error);
                         });
                     },
