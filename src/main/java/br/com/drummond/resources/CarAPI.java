@@ -21,6 +21,7 @@ import br.com.drummond.domain.Car;
 import br.com.drummond.repository.CarRepository;
 
 @RestController
+@CrossOrigin
 public class CarAPI {
 	
 	@Autowired
