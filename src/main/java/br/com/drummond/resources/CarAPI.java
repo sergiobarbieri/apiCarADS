@@ -66,7 +66,7 @@ public class CarAPI {
 		if (car.isPresent())
 			return new ResponseEntity<Car>(car.get(), HttpStatus.OK);
 		else
-			return new ResponseEntity<Car>(car.get(), HttpStatus.NO_CONTENT);
+			return new ResponseEntity<Car>(new Car(), HttpStatus.NO_CONTENT);
 	}
 	
 	/**
@@ -122,7 +122,7 @@ public class CarAPI {
 		carRepo = carRepository.findById(id);
 		
 		if (!carRepo.isPresent())
-			return new ResponseEntity<Car>(carRepo.get(), HttpStatus.NO_CONTENT);
+			return new ResponseEntity<Car>(new Car(), HttpStatus.NO_CONTENT);
 	
 		carRepository.deleteById(id);
 		
